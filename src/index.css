@@ -1,10 +1,14 @@
+
 /* =========================
-   ROOT THEME VARIABLES
+   ROOT THEME VARIABLES (DARK FINTECH CONSOLE)
 ========================= */
 :root {
-  --bg: #0b1220;
-  --panel: #111a2e;
-  --panel-2: #0f172a;
+  --bg: #070b14;
+  --bg-2: #0a1020;
+
+  --panel: rgba(17, 26, 46, 0.65);
+  --panel-2: rgba(15, 23, 42, 0.7);
+
   --text: #e5e7eb;
   --muted: #94a3b8;
 
@@ -13,23 +17,44 @@
   --red: #dc2626;
 
   --border: rgba(148, 163, 184, 0.15);
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
 
   color-scheme: dark;
-  background-color: var(--bg);
   color: var(--text);
 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 
   overflow-x: hidden;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
 }
 
 /* =========================
-   RESET (NO WHITESPACE BUGS)
+   GLOBAL DARK FIX (🔥 IMPORTANT CHANGE)
+========================= */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at top,
+    var(--bg-2) 0%,
+    var(--bg) 60%,
+    #05070f 100%
+  );
+  color: var(--text);
+}
+
+/* =========================
+   RESET
 ========================= */
 *,
 *::before,
@@ -39,18 +64,25 @@
   padding: 0;
 }
 
-html,
-body {
-  width: 100%;
-  height: 100%;
-}
-
 body {
   min-height: 100vh;
-  background: var(--bg);
 }
 
-/* React root must ALWAYS fill viewport */
+/* Subtle system atmosphere (kept but cleaner) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 20% 30%, rgba(59,130,246,0.05), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(16,185,129,0.03), transparent 50%);
+
+  opacity: 0.6;
+}
+
+/* React root */
 #root {
   min-height: 100vh;
   display: flex;
@@ -99,10 +131,10 @@ button:focus-visible {
 }
 
 .dashboard-header {
-  padding: 16px 20px;
+  padding: var(--space-4) var(--space-5);
   border-bottom: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(10px);
+  background: var(--panel-2);
+  backdrop-filter: blur(12px);
 }
 
 .dashboard-body {
@@ -111,24 +143,31 @@ button:focus-visible {
   min-height: 0;
 }
 
-/* Sidebar */
 .sidebar {
   background: var(--panel);
   border-right: 1px solid var(--border);
-  padding: 16px;
+  padding: var(--space-4);
   overflow-y: auto;
+  backdrop-filter: blur(12px);
 }
 
-/* Main content */
 .main {
-  padding: 20px;
+  padding: var(--space-5);
   overflow: auto;
   min-height: 0;
-  background: var(--bg);
 }
 
 /* =========================
-   TABLE STYLES (AML CORE)
+   FILTER BAR
+========================= */
+.filter-bar {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+/* =========================
+   TABLE SYSTEM
 ========================= */
 table {
   width: 100%;
@@ -137,12 +176,14 @@ table {
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
+  backdrop-filter: blur(12px);
 }
 
-th,
-td {
-  padding: 12px 14px;
-  text-align: left;
+/* Sticky header */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 th {
@@ -151,18 +192,26 @@ th {
   letter-spacing: 0.05em;
   color: var(--muted);
   background: var(--panel-2);
+  padding: 12px 14px;
+}
+
+td {
+  padding: 12px 14px;
+  text-align: left;
 }
 
 tr {
   border-bottom: 1px solid var(--border);
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 
 tr:hover {
-  background: rgba(148, 163, 184, 0.05);
+  transform: scale(1.01);
+  background: rgba(148, 163, 184, 0.06);
 }
 
 /* =========================
-   STATUS / RISK COLORS
+   STATUS BADGES
 ========================= */
 .badge {
   padding: 4px 10px;
@@ -190,20 +239,24 @@ tr:hover {
 }
 
 /* =========================
-   FILTER BAR
+   RISK PULSE
 ========================= */
-.filter-bar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+@keyframes pulseRed {
+  0% { background-color: rgba(220, 38, 38, 0.05); }
+  50% { background-color: rgba(220, 38, 38, 0.12); }
+  100% { background-color: rgba(220, 38, 38, 0.05); }
+}
+
+.risk-high {
+  animation: pulseRed 2.5s infinite;
 }
 
 /* =========================
-   SCROLL STYLING (NO JANK)
+   SCROLLBAR
 ========================= */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -212,7 +265,7 @@ tr:hover {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
+  background: rgba(148, 163, 184, 0.2);
   border-radius: 10px;
 }
 
@@ -221,7 +274,7 @@ tr:hover {
 }
 
 /* =========================
-   RESPONSIVE SCALE
+   RESPONSIVE
 ========================= */
 html {
   font-size: 16px;
@@ -243,12 +296,12 @@ html {
   }
 
   .main {
-    padding: 12px;
+    padding: var(--space-3);
   }
 }
 
 /* =========================
-   SAFETY UTILITIES
+   UTILITIES
 ========================= */
 .no-scroll {
   overflow: hidden;

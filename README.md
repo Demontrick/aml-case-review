@@ -1,73 +1,118 @@
-# React + TypeScript + Vite
+# aml-case-review
+![CI](https://github.com/Demontrick/aml-case-review/actions/workflows/ci.yml/badge.svg)
+> Compliance officers shouldn't need to dig for risk. It should be the first thing they see.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript AML Case Review Dashboard that surfaces 
+high-risk cases first, lets compliance officers action them 
+instantly, and updates the UI without waiting on the network.
 
-Currently, two official plugins are available:
+Built to reflect the real frontend problem in AML platforms — 
+when hundreds of alerts land daily, the UI is the last line 
+between a compliance officer and a missed criminal.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## The Problem
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+AML platforms generate hundreds of alerts daily. Compliance 
+officers review each one — wrong decision means regulatory 
+risk. If the UI is slow, cluttered, or unclear, officers make 
+worse decisions under pressure.
 
-## Expanding the ESLint configuration
+## The Solution
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+A fast, focused case review queue — highest risk cases surface 
+first, flag reasons visible immediately, one-click decisions 
+with optimistic UI updates. No waiting. No digging.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- React 19 + TypeScript — strict typing throughout
+- Vite — instant dev server, fast builds
+- TanStack React Query — data fetching + optimistic mutations
+- Vitest + Testing Library — 7 passing component tests
+- GitHub Actions — CI on every push
+
+---
+
+## How It Works
+
+Cases load sorted by risk score — highest danger reviewed first.
+Each case shows customer, amount, country, flag reason, and a 
+risk badge (LOW / MEDIUM / HIGH) at a glance.
+
+Compliance officer clicks Approve or Reject — UI updates 
+instantly via optimistic mutation, no network wait. If the 
+mutation fails, state rolls back automatically.
+
+Filter by status (All / Pending / Approved / Rejected) to 
+manage queue efficiently.
+
+---
+
+## Risk Classification
+
+| Score | Level | Color |
+|-------|-------|-------|
+| 0–40 | LOW | Green |
+| 41–70 | MEDIUM | Amber |
+| 71–100 | HIGH | Red |
+
+---
+
+## Flag Reasons
+
+Real AML flag types used in mock data:
+- Sanctioned Country
+- Politically Exposed Person
+- Unusual Transaction Volume
+- High Risk Jurisdiction
+
+---
+
+## Key Engineering Decisions
+
+**Optimistic UI** — status updates instantly on click. React 
+Query rolls back automatically on failure. Compliance officers 
+never wait on the network for a decision to register.
+
+**Risk-first sorting** — cases always render highest risk_score 
+first. Officers never accidentally review a low-risk case before 
+a high-risk one.
+
+**Strict TypeScript** — AMLCase interface enforces shape across 
+components, hooks, and mock data. No runtime surprises.
+
+**Component isolation** — RiskBadge and CaseCard are fully 
+self-contained and independently testable. 7 Vitest tests 
+covering rendering, interactions, and edge cases.
+
+---
+
+## Running Locally
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Opens on `http://localhost:5173`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Running Tests
+
+```bash
+npx vitest run
 ```
+
+7 tests, 2 test files, all passing.
+
+---
+
+## CI
+
+GitHub Actions runs the full Vitest suite on every push.
+No Docker, no containers — Node 20, npm ci, tests run.
